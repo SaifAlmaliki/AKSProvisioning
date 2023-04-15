@@ -11,7 +11,7 @@ provider "azurerm" {
   features {}
 }
 
-# Resource Group
+# Resource Group along with its required parameters.
 resource "azurerm_resource_group" "aks-rg" {
   name     = "aksRG"
   location = "West Europe"
@@ -22,6 +22,8 @@ resource "azurerm_resource_group" "aks-rg" {
 }
 
 # Kubernetes  Cluster
+# The 'k8sCluster' is the locally given name for that resource that is only to be used as a reference inside the scope of the module.
+# The name and dns_prefix are used to define the cluster's name and DNS name
 resource "azurerm_kubernetes_cluster" "k8sCluster" {
   name = "k8sCluster"
   location = azurerm_resource_group.aks-rg.location
@@ -29,11 +31,15 @@ resource "azurerm_kubernetes_cluster" "k8sCluster" {
   dns_prefix = "k8sCluster"
   tags = azurerm_resource_group.aks-rg.tags
 
+  # In the 'default_node_pool' you are defining the specs for the worker nodes.
   default_node_pool {
     name = "default"
     node_count = 2
     vm_size = "standard_d2_v2"
   }
+  # define the type of the identity, which is 'SystemAssigned'.
+  # This means that Azure will automatically create the required roles and permissions, 
+  # and you won't need to manage any credentials.
   identity {
     type = "SystemAssigned"
   }
