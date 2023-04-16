@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-aks-ingress
+  labels:
+    name: hello-aks-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: hello-aks-svc
+            port: 
+              number: 80
+
+
+# This Ingress manifest routes all the traffic from path / to the Pods targeted by the hello-aks-svc Service.
